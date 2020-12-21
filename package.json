@@ -6,7 +6,7 @@
     "repository": "https://github.com/ColTo632/materialist-uci",
     "scripts": {
         "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
-        "build": "npm run test && tsc && pkg -t host out/main.js",
+        "build": "npm run test && tsc && pkg -t host dist/main.js",
         "start": "npm run build && main.exe"
     },
     "author": "Colin Topper",
