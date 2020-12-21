@@ -3,7 +3,12 @@
     "target": "ESNext",
     "module": "ESNext",
     "sourceMap": true,
-    "outDir": "out",
+    "outDir": "dist",
     "strict": true
-  }
+  },
+  "exclude": [
+    "./tests/",
+    "./node_modules/",
+    "./dist/"
+  ],
 }

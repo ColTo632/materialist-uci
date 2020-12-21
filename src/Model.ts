@@ -1,8 +1,26 @@
 export class State {
-    public constructor() {
-        this.toMove = 'white';
-        this.pieces = [];
+    public constructor(fen: string | undefined) {
+        if (fen) {
+            //TODO
+            this.toMove = 'white';
+            this.pieces = [];
+
+            this.halfMove = 0;
+            this.fullMove = 0;
+        } else {
+            this.toMove = 'white';
+            this.pieces = []; // TODO define start state
+
+            this.halfMove = 0;
+            this.fullMove = 0;
+        }
     }
+
+    castleAvaliability: null; // TODO Define type
+    enpassantTarget: null; // TODO Define type
+
+    halfMove: number;
+    fullMove: number;
 
     toMove: Color;
     pieces: Piece[];
@@ -14,9 +32,6 @@ export interface Piece {
     val: number;
     loc: Cord;
     color: Color;
-
-    // Should move out of the model file to enforce functional practice
-    getMoves: (obs: Set<Cord>) => Set<Move>;
 }
 
 export class Move {
@@ -60,6 +75,7 @@ const X_TO_STRING = new Map<number, string>([
     [6, 'g'],
     [7, 'h'],
 ]);
+
 const STRING_TO_X = new Map<string, number>([
     ['a', 0],
     ['b', 1],
@@ -81,6 +97,7 @@ const Y_TO_STRING = new Map<number, string>([
     [6, '7'],
     [7, '8'],
 ]);
+
 const STRING_TO_Y = new Map<string, number>([
     ['1', 0],
     ['2', 0],
