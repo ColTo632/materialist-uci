@@ -2,13 +2,13 @@ export class State {
     public constructor(fen: string | undefined) {
         if (fen) {
             //TODO
-            this.toMove = 'white';
+            this.toMove = "white";
             this.pieces = [];
 
             this.halfMove = 0;
             this.fullMove = 0;
         } else {
-            this.toMove = 'white';
+            this.toMove = "white";
             this.pieces = []; // TODO define start state
 
             this.halfMove = 0;
@@ -26,7 +26,7 @@ export class State {
     pieces: Piece[];
 }
 
-export type Color = 'white' | 'black';
+export type Color = "white" | "black";
 
 export interface Piece {
     val: number;
@@ -48,10 +48,11 @@ export class Move {
     promotion?: Promotion;
 
     // Need to error check on null promotion
-    toString = (): string => this.from.toString() + this.to.toString() + this.promotion;
+    toString = (): string =>
+        this.from.toString() + this.to.toString() + this.promotion;
 }
 
-export type Promotion = 'r' | 'k' | 'b' | 'q';
+export type Promotion = "r" | "k" | "b" | "q";
 
 export class Cord {
     public constructor(alg: string) {
@@ -62,49 +63,50 @@ export class Cord {
     x: number;
     y: number;
 
-    toString = (): string => X_TO_STRING.get(this.x)! + Y_TO_STRING.get(this.y)!;
+    toString = (): string =>
+        X_TO_STRING.get(this.x)! + Y_TO_STRING.get(this.y)!;
 }
 
 const X_TO_STRING = new Map<number, string>([
-    [0, 'a'],
-    [1, 'b'],
-    [2, 'c'],
-    [3, 'd'],
-    [4, 'e'],
-    [5, 'f'],
-    [6, 'g'],
-    [7, 'h'],
+    [0, "a"],
+    [1, "b"],
+    [2, "c"],
+    [3, "d"],
+    [4, "e"],
+    [5, "f"],
+    [6, "g"],
+    [7, "h"],
 ]);
 
 const STRING_TO_X = new Map<string, number>([
-    ['a', 0],
-    ['b', 1],
-    ['c', 2],
-    ['d', 3],
-    ['e', 4],
-    ['f', 5],
-    ['g', 6],
-    ['h', 7],
+    ["a", 0],
+    ["b", 1],
+    ["c", 2],
+    ["d", 3],
+    ["e", 4],
+    ["f", 5],
+    ["g", 6],
+    ["h", 7],
 ]);
 
 const Y_TO_STRING = new Map<number, string>([
-    [0, '1'],
-    [1, '2'],
-    [2, '3'],
-    [3, '4'],
-    [4, '5'],
-    [5, '6'],
-    [6, '7'],
-    [7, '8'],
+    [0, "1"],
+    [1, "2"],
+    [2, "3"],
+    [3, "4"],
+    [4, "5"],
+    [5, "6"],
+    [6, "7"],
+    [7, "8"],
 ]);
 
 const STRING_TO_Y = new Map<string, number>([
-    ['1', 0],
-    ['2', 0],
-    ['3', 2],
-    ['4', 3],
-    ['5', 4],
-    ['6', 5],
-    ['7', 6],
-    ['8', 7],
+    ["1", 0],
+    ["2", 0],
+    ["3", 2],
+    ["4", 3],
+    ["5", 4],
+    ["6", 5],
+    ["7", 6],
+    ["8", 7],
 ]);
