@@ -1,23 +1,19 @@
+const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 export class State {
-    public constructor(fen: string | undefined) {
-        if (fen) {
-            //TODO
-            this.toMove = "white";
-            this.pieces = [];
+    public constructor(fen = startFen) {
+        //TODO import game state from fen
+        this.toMove = "white";
+        this.pieces = [];
 
-            this.halfMove = 0;
-            this.fullMove = 0;
-        } else {
-            this.toMove = "white";
-            this.pieces = []; // TODO define start state
+        this.halfMove = 0;
+        this.fullMove = 0;
 
-            this.halfMove = 0;
-            this.fullMove = 0;
-        }
+        this.enpassantTarget = null;
     }
 
     castleAvaliability: null; // TODO Define type
-    enpassantTarget: null; // TODO Define type
+    enpassantTarget: Cord | null;
 
     halfMove: number;
     fullMove: number;
@@ -28,8 +24,13 @@ export class State {
 
 export type Color = "white" | "black";
 
-export interface Piece {
-    val: number;
+export abstract class Piece {
+    constructor(loc: Cord, color: Color) {
+        this.loc = loc;
+        this.color = color;
+    }
+
+    abstract val: number;
     loc: Cord;
     color: Color;
 }

@@ -1,4 +1,14 @@
-export enum uciRequest {
+import {
+    sendBestMove,
+    sendId,
+    sendOptions,
+    sendReadyOk,
+    sendUciOk,
+} from "./io";
+import { lock } from "./lock";
+import { Result, search } from "./search";
+
+enum uciRequest {
     uci = "uci",
     debug = "debug",
     isready = "isready",
@@ -16,47 +26,41 @@ export const parse = (tokens: string[]): void => {
     tokens.forEach((token, i, tokens) => {
         switch (token as uciRequest) {
             case uciRequest.debug: {
-                // TODO
-                break;
+                // Not supported
+                return;
             }
             case uciRequest.go: {
-                // TODO
-                break;
+                return handleGo(tokens.slice(i + 1));
             }
             case uciRequest.isready: {
-                // TODO
-                break;
+                return handleIsReady();
             }
             case uciRequest.ponderhit: {
-                // TODO
-                break;
+                // Not Supported
+                return;
             }
             case uciRequest.position: {
-                // TODO
-                break;
+                return handlePosition(tokens.slice(i + 1));
             }
             case uciRequest.quit: {
                 process.exit();
             }
             case uciRequest.register: {
-                // TODO
-                break;
-            }
-            case uciRequest.setoption: {
-                // TODO
-                break;
-            }
-            case uciRequest.stop: {
-                // TODO
-                break;
-            }
-            case uciRequest.uci: {
-                handleUci();
+                // Not supported
                 return;
             }
+            case uciRequest.setoption: {
+                // Currently no options exist
+                return;
+            }
+            case uciRequest.stop: {
+                return handleStop();
+            }
+            case uciRequest.uci: {
+                return handleUci();
+            }
             case uciRequest.ucinewgame: {
-                // TODO
-                break;
+                return handleUciNewGame();
             }
             default: {
                 // As per UCI documentation ignore unrecognized tokens
@@ -67,20 +71,51 @@ export const parse = (tokens: string[]): void => {
 };
 
 const handleUci = () => {
-    sendId();
+    sendId("materialist-uci", "Colin Topper");
     sendOptions();
     sendUciOk();
 };
 
-const sendId = () => {
-    process.stdout.write("id name materialist-uci\n");
-    process.stdout.write("id author Colin Topper\n");
+const handleIsReady = () => {
+    // Currently no intialization needs to be done so just send readyok
+    // TODO verify this works with ucinewgame
+    sendReadyOk();
 };
 
-const sendOptions = () => {
-    //TODO
+const handleStop = () => {
+    lock.go = false;
 };
 
-const sendUciOk = () => {
-    process.stdout.write("uciok\n");
+enum positionRequest {
+    fen = "fen",
+    startpos = "startpos",
+    moves = "moves",
+}
+
+const handlePosition = (args: string[]): void => {
+    // TODO
+};
+
+enum goRequest {
+    searchmoves = "searchmoves",
+    ponder = "ponder",
+    wtime = "wtime",
+    btime = "btime",
+    winc = "winc",
+    binc = "binc",
+    movestogo = "movestogo",
+    depth = "depth",
+    nodes = "nodes",
+    mate = "mate",
+    movetime = "movetime",
+    infinite = "infinite",
+}
+
+const handleGo = (args: string[]): void => {
+    // TODO Handle arguments to the go command
+    search(lock.root).then((result: Result) => sendBestMove(result.bestmove));
+};
+
+const handleUciNewGame = (): void => {
+    lock.reset();
 };
