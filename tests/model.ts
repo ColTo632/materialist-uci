@@ -1,7 +1,7 @@
-import { expect } from 'chai';
+import { expect } from "chai";
 
-describe('Piece Movement Tests', () => {
-    it('Empty Test', () => {
+describe("Piece Movement Tests", () => {
+    it("Empty Test", () => {
         expect(true).to.be.true;
     });
 });
