@@ -1,52 +1,75 @@
+import { parseFenPosString } from "./functions/fen";
+
 const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 export class State {
     public constructor(fen = startFen) {
-        //TODO import game state from fen
-        this.toMove = "white";
-        this.pieces = [];
+        const subfens = fen.split(" ");
 
-        this.halfMove = 0;
-        this.fullMove = 0;
+        this.pieces = parseFenPosString(subfens[0]);
+        this.toMove = subfens[1] == "w";
 
-        this.enpassantTarget = null;
+        // TODO
+        this.castleAvaliability;
+        subfens[2];
+
+        this.enpassantTarget = subfens[1] == "-" ? null : new Cord(subfens[3]);
+
+        this.halfMove = parseInt(subfens[4]);
+        this.fullMove = parseInt(subfens[5]);
     }
 
-    castleAvaliability: null; // TODO Define type
-    enpassantTarget: Cord | null;
+    readonly castleAvaliability: null; // TODO Define type
+    readonly enpassantTarget: Cord | null;
 
-    halfMove: number;
-    fullMove: number;
+    readonly halfMove: number;
+    readonly fullMove: number;
 
-    toMove: Color;
-    pieces: Piece[];
+    readonly toMove: Color;
+    readonly pieces: Piece[];
 }
 
-export type Color = "white" | "black";
+// Let white = true and black = false
+export type Color = boolean;
 
 export abstract class Piece {
     constructor(loc: Cord, color: Color) {
-        this.loc = loc;
+        this.loc = new Cord(undefined, loc.x, loc.y);
         this.color = color;
     }
 
-    abstract val: number;
-    loc: Cord;
-    color: Color;
+    abstract readonly val: number;
+    readonly loc: Cord;
+    readonly color: Color;
 }
 
 export class Move {
-    public constructor(alg: string) {
-        this.from = new Cord(alg.substring(0, 2));
-        this.to = new Cord(alg.substring(2, 3));
+    public constructor(
+        alg?: string,
+        from?: Cord,
+        to?: Cord,
+        promotion?: Promotion,
+    ) {
+        if (alg) {
+            this.from = new Cord(alg.substring(0, 2));
+            this.to = new Cord(alg.substring(2, 3));
 
-        // Need to error check on string length
-        this.promotion = alg.substring(3) as Promotion;
+            // TODO Need to error check on string length
+            this.promotion = alg.substring(3) as Promotion;
+        } else if (from && to) {
+            this.from = new Cord(undefined, from.x, from.y);
+            this.to = new Cord(undefined, to.x, to.y);
+
+            // TODO Need to error check on string length
+            if (promotion) this.promotion = promotion;
+        } else {
+            throw new Error("Insuffiecent args passed to Move Constructor");
+        }
     }
 
-    from: Cord;
-    to: Cord;
-    promotion?: Promotion;
+    readonly from: Cord;
+    readonly to: Cord;
+    readonly promotion?: Promotion;
 
     // Need to error check on null promotion
     toString = (): string =>
@@ -56,13 +79,20 @@ export class Move {
 export type Promotion = "r" | "k" | "b" | "q";
 
 export class Cord {
-    public constructor(alg: string) {
-        this.x = STRING_TO_X.get(alg.charAt(0))!;
-        this.y = STRING_TO_Y.get(alg.charAt(1))!;
+    public constructor(alg?: string, x?: number, y?: number) {
+        if (alg) {
+            this.x = STRING_TO_X.get(alg.charAt(0))!;
+            this.y = STRING_TO_Y.get(alg.charAt(1))!;
+        } else if (x != undefined && y != undefined) {
+            this.x = x;
+            this.y = y;
+        } else {
+            throw new Error("Insufficent Args passed to Cord constructor");
+        }
     }
 
-    x: number;
-    y: number;
+    readonly x: number;
+    readonly y: number;
 
     toString = (): string =>
         X_TO_STRING.get(this.x)! + Y_TO_STRING.get(this.y)!;
