@@ -8,6 +8,12 @@ export const getUp = (loc: Cord): Cord => new Cord(undefined, loc.x, loc.y + 1);
 export const getDown = (loc: Cord): Cord =>
     new Cord(undefined, loc.x, loc.y - 1);
 
+export const getUpUp = (loc: Cord): Cord =>
+    new Cord(undefined, loc.x, loc.y + 2);
+
+export const getDownDown = (loc: Cord): Cord =>
+    new Cord(undefined, loc.x, loc.y - 2);
+
 export const getUpRight = (loc: Cord): Cord =>
     new Cord(undefined, loc.x + 1, loc.y + 1);
 export const getUpLeft = (loc: Cord): Cord =>

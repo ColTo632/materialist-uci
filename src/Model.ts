@@ -51,14 +51,16 @@ export class Move {
             this.from = new Cord(alg.substring(0, 2));
             this.to = new Cord(alg.substring(2, 3));
 
-            // TODO Need to error check on string length
-            this.promotion = alg.substring(3) as Promotions;
+            if (alg.length > 4) {
+                this.promotion = alg.substring(3) as Promotions;
+            }
         } else if (from && to) {
             this.from = new Cord(undefined, from.x, from.y);
             this.to = new Cord(undefined, to.x, to.y);
 
-            // TODO Need to error check on string length
-            if (promotion) this.promotion = promotion;
+            if (promotion) {
+                this.promotion = promotion;
+            }
         } else {
             throw new Error("Insuffiecent args passed to Move Constructor");
         }
