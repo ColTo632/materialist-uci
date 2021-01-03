@@ -16,8 +16,8 @@ import {
     getRight,
     getLeft,
 } from "./geometry";
-import { Color, Cord, Move, Piece, State } from "../model";
-import { Bishop, King, Knight, Pawn, Queen, Rook } from "../pieces";
+import { Color, Cord, Move, NotPromotions, Piece, State } from "../model";
+import { Bishop, buildPiece, King, Knight, Pawn, Queen, Rook } from "../pieces";
 
 export const getPositionsByColor = (gs: State, color: Color): Set<Cord> =>
     new Set(gs.pieces.filter((p) => p.color == color).map((p) => p.loc));
@@ -31,8 +31,43 @@ export const isCheck = (gs: State): boolean => {
 };
 
 export const applyMove = (gs: State, move: Move): State => {
-    // TODO remember do not mutate passed state
-    return new State();
+    const pieceToMove = gs.pieces.find((p) => p.loc == move.from);
+
+    if (pieceToMove == undefined) {
+        throw new Error("Tried to move piece that does not exist");
+    }
+
+    const newPieces = gs.pieces.filter(
+        (p) => p.loc != move.from && p.loc != move.to,
+    );
+
+    if (move.promotion) {
+        newPieces.push(buildPiece(move.promotion, move.to, pieceToMove.color));
+    } else {
+        newPieces.push(
+            buildPiece(pieceToMove.type, move.to, pieceToMove.color),
+        );
+    }
+
+    // TODO
+    const newCastleAbility = "TODO";
+    const newEnpassantTarget = null;
+
+    const newHalfmove =
+        gs.pieces.length < newPieces.length ||
+        pieceToMove.type == NotPromotions.Pawn
+            ? 0
+            : gs.halfMove + 1;
+    const newFullmove = gs.toMove ? gs.fullMove : gs.fullMove + 1;
+
+    return new State(
+        newPieces,
+        !gs.toMove,
+        newCastleAbility,
+        newEnpassantTarget,
+        newHalfmove,
+        newFullmove,
+    );
 };
 
 export const getMoves = (gs: State): Move[] => {
@@ -56,15 +91,24 @@ export const getMovesForPiece = (gs: State, p: Piece): Move[] => {
         case typeof Pawn: {
             options = [];
 
+            // Normal move one square
             if (p.color) {
                 options.push(getUp(p.loc));
             } else {
                 options.push(getDown(p.loc));
             }
 
+            // First move 2 squares
+            if (p.color && p.loc.y == 1) {
+                options.push(new Cord(undefined, p.loc.x, p.loc.y + 2));
+            }
+            if (!p.color && p.loc.y == 6) {
+                options.push(new Cord(undefined, p.loc.x, p.loc.y - 2));
+            }
+
             // TODO Attack
-            // TODO First move 2 squares
             // TODO En Passant
+
             // TODO Promotion
 
             break;

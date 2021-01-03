@@ -1,4 +1,4 @@
-import { getMoves } from "./functions";
+import { getMoves } from "./functions/moves";
 import { Move, State } from "./model";
 
 // Currently makes a random legal move

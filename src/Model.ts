@@ -1,26 +1,22 @@
-import { parseFenPosString } from "./functions/fen";
-
-const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
 export class State {
-    public constructor(fen = startFen) {
-        const subfens = fen.split(" ");
-
-        this.pieces = parseFenPosString(subfens[0]);
-        this.toMove = subfens[1] == "w";
-
-        // TODO
-        this.castleAvaliability;
-        subfens[2];
-
-        this.enpassantTarget = subfens[1] == "-" ? null : new Cord(subfens[3]);
-
-        this.halfMove = parseInt(subfens[4]);
-        this.fullMove = parseInt(subfens[5]);
+    public constructor(
+        pieces: Piece[],
+        toMove: boolean,
+        castleAvaliability: string,
+        enpassantTarget: Cord | null,
+        halfMove: number,
+        fullMove: number,
+    ) {
+        this.pieces = pieces;
+        this.toMove = toMove;
+        this.castleAvaliability = castleAvaliability;
+        this.enpassantTarget = enpassantTarget;
+        this.halfMove = halfMove;
+        this.fullMove = fullMove;
     }
 
-    readonly castleAvaliability: null; // TODO Define type
-    readonly enpassantTarget: Cord | null;
+    readonly castleAvaliability: string;
+    readonly enpassantTarget?: Cord | null;
 
     readonly halfMove: number;
     readonly fullMove: number;
@@ -39,6 +35,7 @@ export abstract class Piece {
     }
 
     abstract readonly val: number;
+    abstract readonly type: PieceType;
     readonly loc: Cord;
     readonly color: Color;
 }
@@ -48,14 +45,14 @@ export class Move {
         alg?: string,
         from?: Cord,
         to?: Cord,
-        promotion?: Promotion,
+        promotion?: Promotions,
     ) {
         if (alg) {
             this.from = new Cord(alg.substring(0, 2));
             this.to = new Cord(alg.substring(2, 3));
 
             // TODO Need to error check on string length
-            this.promotion = alg.substring(3) as Promotion;
+            this.promotion = alg.substring(3) as Promotions;
         } else if (from && to) {
             this.from = new Cord(undefined, from.x, from.y);
             this.to = new Cord(undefined, to.x, to.y);
@@ -69,14 +66,26 @@ export class Move {
 
     readonly from: Cord;
     readonly to: Cord;
-    readonly promotion?: Promotion;
+    readonly promotion?: Promotions;
 
     // Need to error check on null promotion
     toString = (): string =>
         this.from.toString() + this.to.toString() + this.promotion;
 }
 
-export type Promotion = "r" | "k" | "b" | "q";
+export type PieceType = NotPromotions | Promotions;
+
+export enum NotPromotions {
+    Pawn = "p",
+    King = "k",
+}
+
+export enum Promotions {
+    Rook = "r",
+    Knight = "n",
+    Bishop = "b",
+    Queen = "q",
+}
 
 export class Cord {
     public constructor(alg?: string, x?: number, y?: number) {

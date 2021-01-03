@@ -1,9 +1,10 @@
+import { getStateFromFen } from "./functions/fen";
 import { State } from "./model";
 
 class Lock {
     constructor() {
         this.go = false;
-        this.root = new State();
+        this.root = getStateFromFen();
     }
 
     go: boolean;
@@ -11,7 +12,7 @@ class Lock {
 
     reset = () => {
         this.go = false;
-        this.root = new State();
+        this.root = getStateFromFen();
     };
 }
 
